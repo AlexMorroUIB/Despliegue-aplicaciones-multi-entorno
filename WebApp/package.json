@@ -10,9 +10,11 @@
   "author": "Alex Morro",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "node src/js/app.js",
     "prod": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
+  "dependencies": {
+    "express": "~4.21.0",
+    "mariadb": "~3.0.0"
   }
 }

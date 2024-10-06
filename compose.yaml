@@ -1,19 +1,82 @@
+networks:
+    db-phpmyadmin:
+        name: db-phpmyadmin
+        driver: bridge
+    redis-phpmyadmin:
+        name: redis-phpmyadmin
+        driver: bridge
+    db-webapp:
+        name: db-webapp
+        driver: bridge
+volumes:
+  dbdata:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './storage/database'
+
 services:
+### webapp
   web:
     build: .
+    container_name: webapp
+    ports:
+      - "8080:443"
+    networks:
+      db-webapp:
+        aliases:
+          - webapp
     depends_on:
-      db:
+      mariadb:
         condition: service_healthy
         restart: true
-      redis:
-        condition: service_started
-  redis:
-    image: redis
-  db:
-    image: postgres
+      #cache:
+        #condition: service_started
+
+  ### Redis cache
+ # cache:
+  #  image: redis:7
+   # container_name: redis
+
+  ### MariaDB database
+  mariadb:
+    image: mariadb:11.2
+    container_name: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: pass
+      MARIADB_USER: user
+      MARIADB_PASSWORD: pass
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      db-phpmyadmin:
+        aliases:
+          - mariadb
+      db-webapp:
+        aliases:
+          - mariadb
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
       interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
+      timeout: 5s
+      retries: 3
+
+  ### phpmyadmin to mariaDB
+  phpmyadmin:
+        image: phpmyadmin:5
+        container_name: phpmyadmin
+        links:
+            - mariadb
+        environment:
+            PMA_HOST: mariadb
+            PMA_PORT: 3306
+        ports:
+            - 8081:80
+        networks:
+          db-phpmyadmin:
+            aliases:
+            - phpmyadmin
+  
