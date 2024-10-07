@@ -9,25 +9,15 @@ window.addEventListener('load', function () {
 async function checkDB() {
     //const interval = setInterval(function () {
     try {
-        console.log('pre-fetch')
-        fetch('/dbConnection').then((response) => {
-            console.log('post-fetch')
-            // Our handler throws an error if the request did not succeed.
-            if (response.ok) {
-                alert('ok')
-                throw new Error(`HTTP error: ${response.status}`);
+        await fetch('/dbConnection').then(response => {
+            if (response) {
+                dbbox.innerHTML = "<p style='color: green'>DB OK</p>"
             } else {
-                alert('no ok')
+                dbbox.innerHTML = "<p style='color: red'>DB Down</p>"
             }
         }).catch(err => {
             console.log(err)
         })
-        /*if (res) {
-            dbbox.innerHTML = "<p style='color: green'>DB OK</p>"
-        } else {
-            console.log('res html')
-            dbbox.innerHTML = "<p style='color: red'>DB Down</p>"
-        }*/
         //}, 5000);
         //clearInterval(interval);
     } catch (err) {

@@ -2,11 +2,14 @@ networks:
     db-phpmyadmin:
         name: db-phpmyadmin
         driver: bridge
-    redis-phpmyadmin:
-        name: redis-phpmyadmin
+    redis-phpredisadmin:
+        name: redis-phpredisadmin
         driver: bridge
     db-webapp:
         name: db-webapp
+        driver: bridge
+    redis-webapp:
+        name: redis-webapp
         driver: bridge
 volumes:
   dbdata:
@@ -14,7 +17,7 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: './storage/database'
+      device: './Produccion/database'
 
 services:
 ### webapp
@@ -22,23 +25,16 @@ services:
     build: .
     container_name: webapp
     ports:
-      - "8080:443"
+      - "443:443"
     networks:
       db-webapp:
         aliases:
           - webapp
     depends_on:
       mariadb:
-        condition: service_healthy
-        restart: true
-      #cache:
-        #condition: service_started
-
-  ### Redis cache
- # cache:
-  #  image: redis:7
-   # container_name: redis
-
+        condition: service_started
+      redis:
+        condition: service_started
   ### MariaDB database
   mariadb:
     image: mariadb:11.2
@@ -79,4 +75,31 @@ services:
           db-phpmyadmin:
             aliases:
             - phpmyadmin
-  
+
+  ### Redis cache
+  redis:
+    image: redis:7
+    container_name: redis
+    networks:
+      redis-phpredisadmin:
+        aliases:
+          - redis
+      redis-webapp:
+        aliases:
+          - redis
+
+  ### phpRedisAdmin
+  phpRedisAdmin:
+    image: erikdubbelboer/phpredisadmin
+    container_name: phpRedisAdmin
+    links:
+        - redis
+    environment:
+        REDIS_1_HOST: redis
+    ports:
+        - 8082:80
+    networks:
+      redis-phpredisadmin:
+        aliases:
+          - phpredisadmin
+            

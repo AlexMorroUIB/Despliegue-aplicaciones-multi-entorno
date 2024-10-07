@@ -1,0 +1,73 @@
+networks:
+    db-phpmyadmin:
+        name: db-phpmyadmin
+        driver: bridge
+    redis-phpmyadmin:
+        name: redis-phpmyadmin
+        driver: bridge
+    db-webapp:
+        name: db-webapp
+        driver: bridge
+volumes:
+  dbdata:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './Desarrollo/database'
+
+services:
+### webapp
+  web:
+    build: .
+    container_name: webapp
+    ports:
+      - "443:443"
+    networks:
+      db-webapp:
+        aliases:
+          - webapp
+    depends_on:
+      mariadb:
+        condition: service_started
+
+  ### MariaDB database
+  mariadb:
+    image: mariadb:11.2
+    container_name: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: pass
+      MARIADB_USER: user
+      MARIADB_PASSWORD: pass
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      db-phpmyadmin:
+        aliases:
+          - mariadb
+      db-webapp:
+        aliases:
+          - mariadb
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  ### phpmyadmin to mariaDB
+  phpmyadmin:
+        image: phpmyadmin:5
+        container_name: phpmyadmin
+        links:
+            - mariadb
+        environment:
+            PMA_HOST: mariadb
+            PMA_PORT: 3306
+        ports:
+            - 8081:80
+        networks:
+          db-phpmyadmin:
+            aliases:
+            - phpmyadmin

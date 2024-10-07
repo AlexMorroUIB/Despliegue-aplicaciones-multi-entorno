@@ -18,10 +18,8 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'src/index.html'))
 })
 
-app.get('/dbConnection', () => {
-    return { ok: false }
-    //return DBFunctions.dbConn.getConnection()
-    //return DBFunctions.DBGetAvailability()
+app.get('/dbConnection', async (req, res) => {
+    res.send(await DBFunctions.DBConnect());
 });
 
 https.createServer(options, app).listen(PORT);
