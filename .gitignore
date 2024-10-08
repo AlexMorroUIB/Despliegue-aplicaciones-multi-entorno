@@ -1,4 +1,8 @@
 WebApp/.idea
 WebApp/node_modules
 
+Desarrollo/database
+Produccion/database
+
 .DS_Store
+/Desarrollo/database

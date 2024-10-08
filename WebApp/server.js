@@ -37,21 +37,10 @@ app.get('/redisConnection', async (req, res) => {
 });
 
 app.get('/selectData', async (req, res) => {
-    try {
-        let test = await storageFunctions.selectData()
-        res.send({value: test});
-    } catch (err) {
-        res.send({value: false});
-    }
+    storageFunctions.selectData(req, res);
 });
 
 https.createServer(options, app).listen(PORT);
-
-process.on('unhandledRejection', (reason, promise) => {
-    console.log('Unhandled Rejection at:', reason.stack || reason)
-    // Recommended: send the information to sentry.io
-    // or whatever crash reporting service you use
-})
 
 process.on('unhandledRejection', (error, promise) => {
     console.log(promise)

@@ -1,5 +1,6 @@
 let dbbox = document.getElementById("dbstatus")
 let cachebox = document.getElementById("cachestatus")
+let tabla = document.getElementById("tabla")
 
 // Every 1000 ms (1 sec) check status of connections
 setInterval(checkConnections, 1000)
@@ -32,10 +33,19 @@ async function checkConnections() {
 }
 
 async function selectData() {
+    let datosTabla = `<div>`
     try {
         await fetch('/selectData').then(response => response.json())
             .then((data) => {
-                console.log(data)
+                for (let i = 0; i < data.length; i++) {
+                    datosTabla += `<tr>
+                        <th scope="row">${data[i].use_ID}</th>
+                        <td>${data[i].use_name}</td>
+                        <td>${data[i].use_surname}</td>
+                    </tr>`
+                }
+                datosTabla += `</div>`
+                tabla.innerHTML = datosTabla
             }).catch(err => {
                 console.log(err)
             })

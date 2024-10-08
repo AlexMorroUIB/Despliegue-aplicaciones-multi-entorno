@@ -5,9 +5,13 @@ Tanto la base de datos como la caché cuentan con un servicio separado al cual a
 Sólo hay un Dockerfile que es el de la aplicación web, las otras imágenes provienen de docker hub y todo se despliega mediante docker compose.<br>
 ![Diagrama de la infraestructura](./Diagrama-contenedores.png)
 
-## Desplegar Dev
+## Desplegar entorno de Desarrollo
 Para desplegar el entorno de desarrollo basta con ejecutar el siguiente comando:
 `docker-compose -f compose-dev.yaml up`
+
+Si es la primera ejecucion y no tienes la base de datos de desarrollo creada necesitarás restaurarla mediante el backup con el siguiente comando.
+UNIX: `docker exec -i mariadb sh -c 'exec mariadb -uroot -ppass' < Desarrollo\mariadb-dev.sql`
+Windows (PS): `Get-Content Desarrollo\mariadb-dev.sql | docker exec -i mariadb sh -c 'exec mariadb -uroot -ppass'`
 
 * Para acceder a la aplicación web hay que entrar en: https://localhost
 > Hay que aceptar el certificado ya que está autofirmado.
@@ -15,9 +19,13 @@ Para desplegar el entorno de desarrollo basta con ejecutar el siguiente comando:
 * Para acceder al servicio para administrar la base de datos se debe entrar en la siguiente web en localhost: http://localhost:8081
 > Con usuario `user` y contraseña `pass`.
 
-## Desplegar Producción
+## Desplegar entorno de Producción
 Desplegar el entorno de producción:
 `docker-compose up`
+
+Si es la primera ejecucion y no tienes la base de datos de producción creada necesitarás restaurarla mediante el backup con el siguiente comando:
+UNIX: `docker exec -i mariadb sh -c 'exec mariadb -uroot -ppass' < Produccion\mariadb-pro.sql`
+Windows (PS): `Get-Content Produccion\mariadb-pro.sql | docker exec -i mariadb sh -c 'exec mariadb -uroot -ppass'`
 
 * Acceder a la aplicación web: https://localhost
 * Administrar la base de datos: http://localhost:8081
