@@ -48,7 +48,7 @@ services:
       MARIADB_USER: user
       MARIADB_PASSWORD: pass
     volumes:
-      - dbdata:/var/lib/mysql
+      - dbdata-pro:/var/lib/mysql
     networks:
       db-phpmyadmin:
         aliases:

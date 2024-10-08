@@ -1,5 +1,6 @@
 const mariadb = require('mariadb');
 const {createClient} = require('redis');
+const {createPool} = require("mariadb");
 const client = createClient({
     socket: {
         host: 'redis'
@@ -8,15 +9,22 @@ const client = createClient({
 
 // redis connection errors
 client.on('error', async (err) => {
-    console.log('Redis Client Error', err)
     await client.disconnect()
 });
 // Connect to redis
 client.connect().catch(() => console.log("redis disconnected"))
 
-const DB_HOST = 'mariadb'
+const DB_HOST = 'localhost'
 const DB_USER = 'user'
 const DB_PWD = 'pass'
+const DB_NAME = 'webdata'
+
+let dbPool = mariadb.createPool({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PWD,
+        database: DB_NAME
+    });
 
 async function DBConnect() {
     let dbCon = await mariadb.createConnection({
@@ -36,8 +44,17 @@ async function redisConnect() {
     return client.isReady;
 }
 
+async function selectData() {
+    dbPool.connect().then(conn => {
+        conn.query("SELECT * FROM DUAL").then((rows) => {
+            console.log(rows);
+            conn.end();
+        })
+    })
+    }
 
 module.exports = {
     DBConnect,
-    redisConnect
+    redisConnect,
+    selectData
 }

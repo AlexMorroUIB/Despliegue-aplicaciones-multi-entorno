@@ -30,3 +30,16 @@ async function checkConnections() {
         console.log(err)
     }
 }
+
+async function selectData() {
+    try {
+        await fetch('/selectData').then(response => response.json())
+            .then((data) => {
+                console.log(data)
+            }).catch(err => {
+                console.log(err)
+            })
+    } catch (err) {
+        console.log(err)
+    }
+}

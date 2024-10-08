@@ -3,7 +3,7 @@ Este repositorio consiste en una prueba de despliege de diferentes aplicaciones 
 La aplicación web se conecta tanto a la base de datos como a la caché y muestra el estado de la conexión, si una cae se muestra en la web.<br>
 Tanto la base de datos como la caché cuentan con un servicio separado al cual acceder y manipular los datos, phpmyadmin para conectarse con la base de datos y phpredisadmin para conectarse con la caché.<br>
 Sólo hay un Dockerfile que es el de la aplicación web, las otras imágenes provienen de docker hub y todo se despliega mediante docker compose.<br>
-![Diagrama de la infraestructura](./Diagrama.png)
+![Diagrama de la infraestructura](./Diagrama-contenedores.png)
 
 ## Desplegar Dev
 Para desplegar el entorno de desarrollo basta con ejecutar el siguiente comando:

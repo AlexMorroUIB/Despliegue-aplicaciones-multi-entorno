@@ -36,6 +36,15 @@ app.get('/redisConnection', async (req, res) => {
     }
 });
 
+app.get('/selectData', async (req, res) => {
+    try {
+        let test = await storageFunctions.selectData()
+        res.send({value: test});
+    } catch (err) {
+        res.send({value: false});
+    }
+});
+
 https.createServer(options, app).listen(PORT);
 
 process.on('unhandledRejection', (reason, promise) => {
