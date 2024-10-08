@@ -8,22 +8,35 @@ const options = {
     pfx: fs.readFileSync("ssl/AlexMorro.pfx"),
     passphrase: "1234"
 }
-const DBFunctions = require('./DBFunctions.js');
+const storageFunctions = require('./storageFunctions.js');
 
 const app = express()
 
 app.use(express.static(path.join(__dirname, 'src')))
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'src/index.html'))
 })
 
 app.get('/dbConnection', async (req, res) => {
-    res.send(await DBFunctions.DBConnect());
+    try {
+        let test = await storageFunctions.DBConnect()
+        res.send({value: test});
+    } catch
+        (err) {
+        res.send({value: false});
+    }
+});
+app.get('/redisConnection', async (req, res) => {
+    try {
+        let test = await storageFunctions.redisConnect()
+        res.send({value: test});
+    } catch (err) {
+        res.send({value: false});
+    }
 });
 
 https.createServer(options, app).listen(PORT);
-//http.createServer(app).listen(PORT);
 
 process.on('unhandledRejection', (reason, promise) => {
     console.log('Unhandled Rejection at:', reason.stack || reason)

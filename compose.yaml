@@ -12,7 +12,7 @@ networks:
         name: redis-webapp
         driver: bridge
 volumes:
-  dbdata:
+  dbdata-pro:
     driver: local
     driver_opts:
       type: 'none'
@@ -28,6 +28,9 @@ services:
       - "443:443"
     networks:
       db-webapp:
+        aliases:
+          - webapp
+      redis-webapp:
         aliases:
           - webapp
     depends_on:
