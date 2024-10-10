@@ -13,7 +13,7 @@ client.on('error', async (err) => {
 // Connect to redis
 client.connect().catch(() => console.log("redis disconnected"))
 
-const DB_HOST = 'localhost'
+const DB_HOST = 'mariadb'
 const DB_USER = 'user'
 const DB_PWD = 'pass'
 const DB_NAME = 'webdata'
@@ -49,14 +49,24 @@ function selectData(req, res) {
             let query = await conn.query('SELECT * FROM users')
             await conn.end();
             res.status(200).send(query);
-        } catch (err){
-            console.log("Error SELECT")
+            await client.set("tabla", JSON.stringify(query));
+        } catch (err) {
+            console.log(err)
         }
     })
+}
+
+async function getData(req, res) {
+    let tmp
+    await client.get("tabla").then(response => {
+        tmp = response
+    });
+    res.status(200).send({tabla: JSON.parse(tmp)})
 }
 
 module.exports = {
     DBConnect,
     redisConnect,
-    selectData
+    selectData,
+    getData
 }

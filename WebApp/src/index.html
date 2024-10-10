@@ -12,6 +12,7 @@
     <h1>Web app in docker</h1>
     <button type="button" class="btn btn-outline-primary btn-sm" onclick="checkConnections()">Check connections</button>
     <button type="button" class="btn btn-outline-primary btn-sm" onclick="selectData()">SELECT</button>
+    <button type="button" class="btn btn-outline-primary btn-sm" onclick="getData()">Get from Redis</button>
     <ul class="list-group list-group-flush col-4">
         <li id="dbstatus" class="list-group-item"></li>
         <li id="cachestatus" class="list-group-item"></li>
@@ -25,6 +26,19 @@
         </tr>
         </thead>
         <tbody id="tabla">
+        </tbody>
+    </table>
+    <br>
+    <p>Tabla Redis:</p>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Surname</th>
+        </tr>
+        </thead>
+        <tbody id="tablaRedis">
         </tbody>
     </table>
 </div>

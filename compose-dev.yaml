@@ -38,8 +38,6 @@ services:
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: pass
-      MARIADB_USER: user
-      MARIADB_PASSWORD: pass
     volumes:
       - dbdata-dev:/var/lib/mysql
     networks:

@@ -1,6 +1,7 @@
 let dbbox = document.getElementById("dbstatus")
 let cachebox = document.getElementById("cachestatus")
 let tabla = document.getElementById("tabla")
+let tablaRedis = document.getElementById("tablaRedis")
 
 // Every 1000 ms (1 sec) check status of connections
 setInterval(checkConnections, 1000)
@@ -46,6 +47,29 @@ async function selectData() {
                 }
                 datosTabla += `</div>`
                 tabla.innerHTML = datosTabla
+            }).catch(err => {
+                console.log(err)
+            })
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+async function getData() {
+    let datosTabla = `<div>`
+    try {
+        await fetch('/getData').then(response => response.json())
+            .then(data => {
+            let datos = data.tabla
+                for (let i = 0; i < datos.length; i++) {
+                    datosTabla += `<tr>
+                        <th scope="row">${datos[i].use_ID}</th>
+                        <td>${datos[i].use_name}</td>
+                        <td>${datos[i].use_surname}</td>
+                    </tr>`
+                }
+                datosTabla += `</div>`
+                tablaRedis.innerHTML = datosTabla
             }).catch(err => {
                 console.log(err)
             })

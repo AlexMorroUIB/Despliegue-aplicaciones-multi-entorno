@@ -36,8 +36,12 @@ app.get('/redisConnection', async (req, res) => {
     }
 });
 
-app.get('/selectData', async (req, res) => {
+app.get('/selectData', (req, res) => {
     storageFunctions.selectData(req, res);
+});
+
+app.get('/getData', (req, res) => {
+    storageFunctions.getData(req, res);
 });
 
 https.createServer(options, app).listen(PORT);
